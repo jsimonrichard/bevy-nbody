@@ -341,6 +341,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy-nbody"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_rapier2d",
+ "rayon",
+]
+
+[[package]]
 name = "bevy_a11y"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2410,15 +2419,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
-]
-
-[[package]]
-name = "nbody"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy_rapier2d",
- "rayon",
 ]
 
 [[package]]

@@ -1,5 +1,8 @@
+mod aabb;
+mod bvh;
 mod forces;
 
+use crate::forces::{AddForcesEachFrame, UpdateForce};
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 use bevy_rapier2d::{
     dynamics::{ExternalForce, ExternalImpulse, ReadMassProperties, RigidBody},
@@ -7,21 +10,24 @@ use bevy_rapier2d::{
     plugin::{NoUserData, RapierConfiguration, RapierPhysicsPlugin},
     render::RapierDebugRenderPlugin,
 };
-use forces::{AddForcesEachFrame, UpdateForce};
+use bvh::{LargeMass, SimulateGravity};
 
 #[derive(Component)]
 struct Player;
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
-        .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(50.0))
-        .add_plugins(RapierDebugRenderPlugin::default())
+        .add_plugins((
+            DefaultPlugins,
+            RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(50.0),
+            RapierDebugRenderPlugin::default(),
+            AddForcesEachFrame,
+            SimulateGravity,
+        ))
         .insert_resource(RapierConfiguration {
             gravity: Vec2::ZERO,
             ..Default::default()
         })
-        .add_plugins(AddForcesEachFrame)
         .add_systems(Startup, setup)
         .add_systems(Update, player_force1.in_set(UpdateForce))
         .add_systems(Update, player_force2.in_set(UpdateForce))
@@ -60,6 +66,7 @@ fn setup(
         ExternalForce::default(),
         ExternalImpulse::default(),
         ReadMassProperties::default(),
+        LargeMass,
     ))
     .with_children(|parent| {
         parent.spawn(Camera2dBundle::default());
@@ -78,6 +85,7 @@ fn setup(
         ExternalForce::default(),
         ExternalImpulse::default(),
         ReadMassProperties::default(),
+        LargeMass,
     ));
 }
 
